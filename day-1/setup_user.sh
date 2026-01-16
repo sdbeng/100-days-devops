@@ -74,8 +74,11 @@ set_password() {
     local password=$2
     
     if [ -n "$password" ]; then
+        # Note: Passing passwords via command line is insecure in production.
+        # For production use, consider: passwd, chpasswd with stdin, or PAM modules.
         echo "$username:$password" | chpasswd
         print_info "Password set for user: $username"
+        print_warning "Password was passed via command line (visible in process list)"
     else
         passwd "$username"
     fi
@@ -294,14 +297,17 @@ show_usage() {
     echo "  -h             Show this help message"
     echo ""
     echo "Examples:"
-    echo "  # Interactive mode"
+    echo "  # Interactive mode (recommended for password entry)"
     echo "  sudo $0"
     echo ""
     echo "  # Create user with sudo access"
-    echo "  sudo $0 -u john -f 'John Doe' -p 'password123' -s"
+    echo "  sudo $0 -u john -f 'John Doe' -s"
     echo ""
-    echo "  # Create user with groups"
+    echo "  # Create user with groups (password will be prompted)"
     echo "  sudo $0 -u jane -f 'Jane Smith' -g 'docker,developers'"
+    echo ""
+    echo "  # Non-interactive with password (INSECURE - visible in process list)"
+    echo "  sudo $0 -u testuser -f 'Test User' -p 'YourSecurePassword123'"
 }
 
 # Main script

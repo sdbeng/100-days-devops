@@ -34,6 +34,8 @@ A Docker environment demonstrating:
 - Group management
 - Permission setup
 
+**Security Note**: This Dockerfile contains hard-coded passwords for **DEMO/LEARNING purposes ONLY**. Never use hard-coded passwords in production. For production environments, use secrets management, environment variables, or SSH key-based authentication.
+
 ## Quick Start
 
 ### Option 1: Run Locally (Linux/Mac with sudo)
@@ -42,11 +44,15 @@ A Docker environment demonstrating:
 # Make the script executable
 chmod +x setup_user.sh
 
-# Run in interactive mode
+# Run in interactive mode (recommended - prompts for password securely)
 sudo ./setup_user.sh
 
-# Or use non-interactive mode
-sudo ./setup_user.sh -u newuser -f "New User" -p "password123" -s
+# Or use non-interactive mode without password (will need to set later)
+sudo ./setup_user.sh -u newuser -f "New User" -s
+
+# WARNING: Passing passwords via command line is insecure
+# Only use for testing/learning - password visible in process list
+sudo ./setup_user.sh -u testuser -f "Test User" -p "InsecurePassword123"
 ```
 
 ### Option 2: Use Docker
@@ -244,13 +250,29 @@ lastlog
 
 ## Security Best Practices
 
-1. **Strong Passwords**: Always use strong, unique passwords
+### Critical Security Notes for This Exercise
+
+**⚠️ IMPORTANT**: This exercise uses simplified security practices for **LEARNING PURPOSES ONLY**. Never use these practices in production:
+
+1. **Hard-coded Passwords**: The Dockerfile contains hard-coded passwords - NEVER do this in production
+2. **Command-line Passwords**: The `-p` flag exposes passwords in process lists - use interactive mode instead
+3. **Demo Environment**: These scripts are designed for local learning, not production systems
+
+### Production-Ready Security Practices
+
+1. **Strong Passwords**: Always use strong, unique passwords (minimum 12 characters, mix of types)
 2. **Principle of Least Privilege**: Only grant necessary permissions
-3. **Regular Audits**: Review user accounts regularly
-4. **Disable Unused Accounts**: Lock or remove accounts that aren't needed
-5. **Use SSH Keys**: Prefer SSH key authentication over passwords
-6. **Sudo Over Root**: Use sudo for elevated privileges instead of root login
-7. **Password Policies**: Implement password aging and complexity requirements
+3. **Password Management**: 
+   - Never pass passwords via command line
+   - Use secure password managers
+   - Implement proper secrets management (HashiCorp Vault, AWS Secrets Manager, etc.)
+4. **SSH Key Authentication**: Prefer SSH keys over passwords for remote access
+5. **Regular Audits**: Review user accounts regularly
+6. **Disable Unused Accounts**: Lock or remove accounts that aren't needed
+7. **Sudo Over Root**: Use sudo for elevated privileges instead of direct root login
+8. **Password Policies**: Implement password aging and complexity requirements
+9. **Multi-Factor Authentication**: Use MFA whenever possible
+10. **Audit Logging**: Enable and monitor authentication logs
 
 ```bash
 # Lock user account
