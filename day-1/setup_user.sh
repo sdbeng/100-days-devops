@@ -105,8 +105,16 @@ setup_sudo() {
     local sudo_access=$2
     
     if [ "$sudo_access" = "yes" ]; then
-        usermod -aG sudo "$username" 2>/dev/null || usermod -aG wheel "$username" 2>/dev/null || print_warning "Could not add to sudo/wheel group"
-        print_info "Sudo access granted to user: $username"
+        # Check which sudo group exists and add user to it
+        if getent group sudo > /dev/null 2>&1; then
+            usermod -aG sudo "$username"
+            print_info "Sudo access granted to user: $username (added to sudo group)"
+        elif getent group wheel > /dev/null 2>&1; then
+            usermod -aG wheel "$username"
+            print_info "Sudo access granted to user: $username (added to wheel group)"
+        else
+            print_warning "Could not add to sudo/wheel group - neither group exists"
+        fi
     fi
 }
 
@@ -118,7 +126,7 @@ display_user_info() {
     echo "----------------------------------------"
     id "$username"
     echo "----------------------------------------"
-    echo "Home directory: $(eval echo ~$username)"
+    echo "Home directory: $(getent passwd "$username" | cut -d: -f6)"
     echo "Shell: $(getent passwd "$username" | cut -d: -f7)"
     echo "Groups: $(groups "$username")"
     echo "----------------------------------------"

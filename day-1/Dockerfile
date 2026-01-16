@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a sample user with home directory
+# Note: Hard-coded password is for DEMO/LEARNING purposes only.
+# In production, use secure password management practices.
 RUN useradd -m -s /bin/bash devops && \
     echo "devops:devops123" | chpasswd && \
     usermod -aG sudo devops
