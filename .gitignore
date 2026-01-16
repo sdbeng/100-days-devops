@@ -1,0 +1,28 @@
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+
+# Docker
+.dockerignore
+
+# OS files
+Thumbs.db
+
+# Test outputs
+test-results/
+coverage/
